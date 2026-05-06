@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'motion/react'
 import {
   ChevronDown,
   Menu,
@@ -86,10 +87,13 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Utility bar — collapses height on scroll */}
-      <div
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: utilityHidden ? 0 : 1 }}
+        transition={{ duration: 0.3 }}
         className={cn(
-          'utility-bar hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out md:block',
-          utilityHidden ? 'max-h-0 opacity-0' : 'max-h-9 opacity-100',
+          'utility-bar hidden overflow-hidden md:block',
+          utilityHidden ? 'max-h-0' : 'max-h-9',
         )}
       >
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-5 md:px-8">
@@ -98,35 +102,41 @@ export function Header() {
               <MapPin className="h-3 w-3" strokeWidth={2.25} />
               Pune, Maharashtra · India
             </span>
-            <a href="tel:+910000000000" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white">
+            <a href="tel:+910000000000" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
               <Phone className="h-3 w-3" strokeWidth={2.25} />
               +91 00000 00000
             </a>
-            <a href="mailto:hello@alphinix.in" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white">
+            <a href="mailto:hello@alphinix.in" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
               <Mail className="h-3 w-3" strokeWidth={2.25} />
               hello@alphinix.in
             </a>
           </div>
           <div className="flex items-center gap-5 text-white/80">
-            <a href="#" className="hover:text-white">Investors</a>
-            <a href="#" className="hover:text-white">Partners</a>
-            <a href="#" className="hover:text-white">Newsroom</a>
-            <a href="#contact" className="hover:text-white">Support</a>
+            <a href="#" className="hover:text-white transition-colors">Investors</a>
+            <a href="#" className="hover:text-white transition-colors">Partners</a>
+            <a href="#" className="hover:text-white transition-colors">Newsroom</a>
+            <a href="#contact" className="hover:text-white transition-colors">Support</a>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main bar */}
-      <div
+      <motion.div
+        animate={{
+          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 1)',
+        }}
+        transition={{ duration: 0.3 }}
         className={cn(
-          'border-b transition-[background-color,backdrop-filter,box-shadow,border-color] duration-300',
+          'border-b transition-all duration-300',
           scrolled
-            ? 'border-line bg-white/85 shadow-[0_1px_0_0_rgba(11,18,32,0.04),0_8px_24px_-12px_rgba(11,18,32,0.08)] backdrop-blur-md'
+            ? 'border-line shadow-[0_1px_0_0_rgba(11,18,32,0.04),0_8px_24px_-12px_rgba(11,18,32,0.08)] backdrop-blur-xl'
             : 'border-transparent bg-white',
         )}
       >
-        <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-5 md:px-8">
-          <Logo />
+        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 md:px-8">
+          <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+            <Logo />
+          </motion.div>
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setOpen(null)}>
@@ -153,24 +163,31 @@ export function Header() {
           </nav>
 
           {/* Right cluster */}
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-3 lg:flex">
             <PortalDropdown items={PORTAL} />
-            <a
+            <motion.a
               href="#contact"
-              className="group inline-flex items-center gap-1.5 rounded-md bg-brand-700 px-4 py-2 text-[13.5px] font-semibold text-white transition-colors hover:bg-brand-800"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-5 py-2.5 text-[14px] font-semibold text-white shadow-[0_8px_24px_-12px_rgba(29,58,165,0.5)] transition-all duration-300 hover:shadow-[0_12px_32px_-12px_rgba(29,58,165,0.6)]"
             >
-              Request a proposal
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2.5} />
-            </a>
+              <span className="relative z-10 flex items-center gap-2">
+                Request a proposal
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.5} />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-700 to-brand-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </motion.a>
           </div>
 
-          <button
-            className="grid h-10 w-10 place-items-center rounded-md text-fg ring-1 ring-line lg:hidden"
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            className="grid h-10 w-10 place-items-center rounded-full text-fg ring-1 ring-line lg:hidden transition-all hover:bg-canvas"
             onClick={() => setMobile((v) => !v)}
             aria-label="Toggle menu"
           >
             {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          </motion.button>
         </div>
 
         {/* Mega menus */}
@@ -201,7 +218,7 @@ export function Header() {
             }}
           />
         </MegaMenu>
-      </div>
+      </motion.div>
 
       {/* Mobile sheet */}
       <div
